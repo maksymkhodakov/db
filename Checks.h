@@ -44,7 +44,7 @@ int checkRecordExistence(struct Indexer indexer, char* error)
 
 int checkKeyPairUniqueness(struct Master master, int productId)
 {
-	FILE* slavesDb = fopen(SLAVE_DATA, "r+b");
+	FILE* slavesDb = fopen(SLAVE_DATA, "a+b");
 	struct Slave slave;
 
 	fseek(slavesDb, master.firstSlaveAddress, SEEK_SET);

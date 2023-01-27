@@ -128,7 +128,7 @@ int insertSlave(struct Master master, struct Slave slave, char* error)
 	slave.exists = 1;
 
 	FILE* database = fopen(SLAVE_DATA, "a+b");
-	FILE* garbageZone = fopen(SLAVE_GARBAGE, "rb");
+	FILE* garbageZone = fopen(SLAVE_GARBAGE, "a+b");
 
 	int garbageCount;											
 

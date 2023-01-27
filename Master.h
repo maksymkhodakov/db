@@ -74,9 +74,9 @@ int insertMaster(struct Master record)
 {
 	FILE* indexTable = fopen(MASTER_IND, "a+b");			// "a+b": відкрити бінарний файл
 	FILE* database = fopen(MASTER_DATA, "a+b");				// для запису в кінець та читання
-	FILE* garbageZone = fopen(MASTER_GARBAGE, "rb");		// "rb": відкрити бінарний файл для читання
+	FILE* garbageZone = fopen(MASTER_GARBAGE, "a+b");		// "rb": відкрити бінарний файл для читання
 	struct Indexer indexer;
-	int garbageCount;
+	int garbageCount = 0;
 
 	fscanf(garbageZone, "%d", &garbageCount);
 
