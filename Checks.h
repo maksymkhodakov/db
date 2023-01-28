@@ -2,105 +2,75 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "Slave.h"
-int getMaster(struct Master* master, int id, char* error);
+#include "Crew.h"
 
-int checkFileExistence(FILE* indexTable, FILE* database, char* error)
-{
-	if (indexTable == NULL || database == NULL)				// Файли БД ще не існують
-	{
-		strcpy(error, "database files are not created yet");
+int getTrain(struct Train* train, int id, char* error);
+
+int checkFileExists(FILE* indexTable, FILE* database, char* error) {
+	if (indexTable == NULL || database == NULL) {
+		strcpy(error, "DB files do not exits");
 		return 0;
 	}
-
 	return 1;
 }
 
-int checkIndexExistence(FILE* indexTable, char* error, int id)
-{
+int checkIndexExists(FILE* indexTable, char* error, int id) {
 	fseek(indexTable, 0, SEEK_END);
-
 	long indexTableSize = ftell(indexTable);
-
-	if (indexTableSize == 0 || id * sizeof(struct Indexer) > indexTableSize)
-	{
-		strcpy(error, "no such ID in table");				// Такого номеру в табличці нема
+	if (indexTableSize == 0 || id * sizeof(struct Indexer) > indexTableSize) {
+		strcpy(error, "no such ID in table");
 		return 0;
 	}
-
 	return 1;
 }
 
-int checkRecordExistence(struct Indexer indexer, char* error)
-{
-	if (!indexer.exists)									// Запис було вилучено
-	{
-		strcpy(error, "the record you\'re looking for has been removed");
+int checkRecordExists(struct Indexer indexer, char* error) {
+	if (!indexer.exists) {
+		strcpy(error, "the record has been deleted");
 		return 0;
 	}
-
 	return 1;
 }
 
-int checkKeyPairUniqueness(struct Master master, int productId)
-{
-	FILE* slavesDb = fopen(SLAVE_DATA, "a+b");
-	struct Slave slave;
+int checkKeyPairUnique(struct Train train, int crewId) {
+	FILE* crewsDb = fopen(CREW_DATA, "a+b");
+	struct Crew crew;
+	fseek(crewsDb, train.firstCrewAddress, SEEK_SET);
 
-	fseek(slavesDb, master.firstSlaveAddress, SEEK_SET);
-
-	for (int i = 0; i < master.slavesCount; i++)
-	{
-		fread(&slave, SLAVE_SIZE, 1, slavesDb);
-		fclose(slavesDb);
-
-		if (slave.productId == productId)
-		{
+	for (int i = 0; i < train.crewsCount; i++) {
+		fread(&crew, CREW_SIZE, 1, crewsDb);
+		fclose(crewsDb);
+		if (crew.crewId == crewId) {
 			return 0;
 		}
-
-		slavesDb = fopen(SLAVE_DATA, "r+b");
-		fseek(slavesDb, slave.nextAddress, SEEK_SET);
+        crewsDb = fopen(CREW_DATA, "r+b");
+		fseek(crewsDb, crew.nextAddress, SEEK_SET);
 	}
-
-	fclose(slavesDb);
-
+	fclose(crewsDb);
 	return 1;
 }
 
-void info()
-{
-	FILE* indexTable = fopen("master.ind", "rb");
-
-	if (indexTable == NULL)
-	{
-		printf("Error: database files are not created yet\n");
+void info() {
+	FILE* indexTable = fopen("train.ind", "rb");
+	if (indexTable == NULL) {
+		printf("Error: database files do not exist\n");
 		return;
 	}
-
-	int masterCount = 0;
-	int slaveCount = 0;
+	int trainCount = 0;
+	int crewCount = 0;
 
 	fseek(indexTable, 0, SEEK_END);
 	int indAmount = ftell(indexTable) / sizeof(struct Indexer);
-
-	struct Master master;
-
+	struct Train train;
 	char dummy[51];
-
-	for (int i = 1; i <= indAmount; i++)
-	{
-		if (getMaster(&master, i, dummy))
-		{
-			masterCount++;
-			slaveCount += master.slavesCount;
-
-			printf("Master #%d has %d slave(s)\n", i, master.slavesCount);
+	for (int i = 1; i <= indAmount; i++) {
+		if (getTrain(&train, i, dummy)) {
+			trainCount++;
+            crewCount += train.crewsCount;
+			printf("Train #%d has %d crews\n", i, train.crewsCount);
 		}
 	}
-
 	fclose(indexTable);
-
-	printf("Total masters: %d\n", masterCount);
-	printf("Total slaves: %d\n", slaveCount);
+	printf("Total trains: %d\n", trainCount);
+	printf("Total crews: %d\n", crewCount);
 }

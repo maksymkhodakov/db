@@ -9,7 +9,7 @@ add_executable(Lab_1_2
         Checks.h
         Input.h
         Main.c
-        Master.h
+        Train.h
         Output.h
-        Slave.h
-        Structures.h)
+        Crew.h
+        Entities.h)

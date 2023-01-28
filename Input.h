@@ -1,38 +1,50 @@
 #pragma once
 #include <stdio.h>
 #include <string.h>
-#include "Structures.h"
-#include "Master.h"
+#include "Entities.h"
+#include "Train.h"
 
-void readMaster(struct Master* master)
-{
+void readTrain(struct Train* train) {
 	char name[16];
-	int status;
+    int size;
+    char color[16];
+    char type[16];
 
 	name[0] = '\0';
-
-	printf("Enter master\'s name: ");
+	printf("Enter train\'s name: ");
 	scanf("%s", name);
+	strcpy(train->name, name);
 
-	strcpy(master->name, name);
+	printf("Enter train\'s size: ");
+	scanf("%d", &size);
+    train->size = size;
 
-	printf("Enter master\'s status: ");
-	scanf("%d", &status);
+    color[0] = '\0';
+    printf("Enter train\'s color: ");
+    scanf("%s", color);
+    strcpy(train->color, color);
 
-	master->status = status;
+    type[0] = '\0';
+    printf("Enter train\'s type: ");
+    scanf("%s", type);
+    strcpy(train->type, type);
 }
 
-void readSlave(struct Slave* slave)
-{
-	int x;
+void readCrew(struct Crew* crew) {
+    char crewName[20];
+    int crewAmount;
+    int yearsOfExperience;
 
-	printf("Enter price: ");
-	scanf("%d", &x);
+    crewName[0] = '\0';
+    printf("Enter crew name: ");
+    scanf("%s", crewName);
+    strcpy(crew->crewName, crewName);
 
-	slave->price = x;
+	printf("Enter crew amount: ");
+	scanf("%d", &crewAmount);
+    crew->crewAmount = crewAmount;
 
-	printf("Enter amount: ");
-	scanf("%d", &x);
-
-	slave->amount = x;
+	printf("Enter crew years of experience: ");
+	scanf("%d", &yearsOfExperience);
+    crew->yearsOfExperience = yearsOfExperience;
 }
