@@ -13,8 +13,10 @@ int main() {
 		int choice;
 		int id;
 		char error[51];
-
-		printf("Choose:\n0 - EXIT\n1 - Insert Train\n2 - Get Train\n3 - Update Train\n4 - Delete Train\n5 - Insert Crew\n6 - Get Crew\n7 - Update Crew\n8 - Delete Crew\n9 - Info\n");
+        char entering[10];
+        printf("ENTER SOMETHING TO PROCEED\n");
+        scanf("%s", entering);
+		printf("Options:\n0 EXIT\n1 Insert Train\n2 Get Train\n3 Update Train\n4 Delete Train\n5 Insert Crew\n6 Get Crew\n7 Update Crew\n8 Delete Crew\n9 General Info\n");
 		scanf("%d", &choice);
 		switch (choice) {
 			case 0:
