@@ -16,5 +16,5 @@ void printCrew(struct Crew crew, struct Train train) {
 	printf("Train info: %s, %s \n", train.name, train.type);
 	printf("Crew name: %s\n", crew.crewName);
 	printf("Crew amount: %d\n", crew.crewAmount);
-	printf("Crew experience: %d\n", crew.yearsOfExperience);
+	printf("Crew rating score: %d\n", crew.ratingScore);
 }

@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "Entities.h"
-#include "Checks.h"
+#include "Validations.h"
 #include "Train.h"
 
 #define CREW_DATA "crew.fl"

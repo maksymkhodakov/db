@@ -6,7 +6,7 @@ set(CMAKE_C_STANDARD 11)
 include_directories(.)
 
 add_executable(Lab_1_2
-        Checks.h
+        Validations.h
         Input.h
         Main.c
         Train.h

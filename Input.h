@@ -33,7 +33,7 @@ void readTrain(struct Train* train) {
 void readCrew(struct Crew* crew) {
     char crewName[20];
     int crewAmount;
-    int yearsOfExperience;
+    int ratingScore;
 
     crewName[0] = '\0';
     printf("Enter crew name: ");
@@ -44,7 +44,7 @@ void readCrew(struct Crew* crew) {
 	scanf("%d", &crewAmount);
     crew->crewAmount = crewAmount;
 
-	printf("Enter crew years of experience: ");
-	scanf("%d", &yearsOfExperience);
-    crew->yearsOfExperience = yearsOfExperience;
+	printf("Enter rating score of crew: ");
+	scanf("%d", &ratingScore);
+    crew->ratingScore = ratingScore;
 }

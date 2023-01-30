@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "Checks.h"
+#include "Validations.h"
 #include "Crew.h"
 
 #define TRAIN_IND "train.ind"

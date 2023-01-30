@@ -15,7 +15,7 @@ struct Crew {
 	int crewId;
     char crewName[20];
     int crewAmount;
-    int yearsOfExperience;
+    int ratingScore;
 	int exists;
 	long selfAddress;
 	long nextAddress;
