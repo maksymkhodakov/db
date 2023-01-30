@@ -11,10 +11,19 @@
 #define CREW_GARBAGE "crew_garbage.txt"
 #define CREW_SIZE sizeof(struct Crew)
 
+struct Crew linkLoop(FILE *database, struct Train *train, struct Crew *previous);
+
 int updateTrain(struct Train train, char* error);
 
-void reopenDatabase(FILE* database)
-{
+struct Crew linkLoop(FILE *database, struct Train *train, struct Crew *previous) {
+    for (int i = 0; i < (*train).crewsCount; i++) {
+        fread(previous, CREW_SIZE, 1, database);
+        fseek(database, (*previous).nextAddress, SEEK_SET);
+    }
+    return (*previous);
+}
+
+void reopenDatabase(FILE* database) {
 	fclose(database);
 	database = fopen(CREW_DATA, "r+b");
 }
@@ -23,13 +32,8 @@ void linkAddresses(FILE* database, struct Train train, struct Crew crew) {
 	reopenDatabase(database);
 	struct Crew previous;
 	fseek(database, train.firstCrewAddress, SEEK_SET);
-
-	for (int i = 0; i < train.crewsCount; i++) {
-		fread(&previous, CREW_SIZE, 1, database);
-		fseek(database, previous.nextAddress, SEEK_SET);
-	}
-
-	previous.nextAddress = crew.selfAddress;
+    previous = linkLoop(database, &train, &previous);
+    previous.nextAddress = crew.selfAddress;
 	fwrite(&previous, CREW_SIZE, 1, database);
 }
 

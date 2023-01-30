@@ -6,6 +6,8 @@
 
 int getTrain(struct Train* train, int id, char* error);
 
+void loopThroughTrains(int indAmount, struct Train *train, char *dummy, int *trainCount, int *crewCount);
+
 int checkFileExists(FILE* indexTable, FILE* database, char* error) {
 	if (indexTable == NULL || database == NULL) {
 		strcpy(error, "DB files do not exits");
@@ -36,7 +38,6 @@ int checkKeyPairUnique(struct Train train, int crewId) {
 	FILE* crewsDb = fopen(CREW_DATA, "a+b");
 	struct Crew crew;
 	fseek(crewsDb, train.firstCrewAddress, SEEK_SET);
-
 	for (int i = 0; i < train.crewsCount; i++) {
 		fread(&crew, CREW_SIZE, 1, crewsDb);
 		fclose(crewsDb);
@@ -58,19 +59,22 @@ void info() {
 	}
 	int trainCount = 0;
 	int crewCount = 0;
-
 	fseek(indexTable, 0, SEEK_END);
 	int indAmount = ftell(indexTable) / sizeof(struct Indexer);
 	struct Train train;
 	char dummy[51];
-	for (int i = 1; i <= indAmount; i++) {
-		if (getTrain(&train, i, dummy)) {
-			trainCount++;
-            crewCount += train.crewsCount;
-			printf("Train #%d has %d crews\n", i, train.crewsCount);
-		}
-	}
-	fclose(indexTable);
+    loopThroughTrains(indAmount, &train, dummy, &trainCount, &crewCount);
+    fclose(indexTable);
 	printf("Total trains: %d\n", trainCount);
 	printf("Total crews: %d\n", crewCount);
+}
+
+void loopThroughTrains(int indAmount, struct Train *train, char *dummy, int *trainCount, int *crewCount) {
+    for (int i = 1; i <= indAmount; i++) {
+        if (getTrain(train, i, dummy)) {
+            (*trainCount)++;
+            (*crewCount) += (*train).crewsCount;
+            printf("Train #%d has %d crews\n", i, (*train).crewsCount);
+        }
+    }
 }

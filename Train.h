@@ -68,10 +68,8 @@ int insertTrain(struct Train record) {
 		overwriteGarbageId(garbageCount, garbageZone, &record);
 		fclose(indexTable);
 		fclose(database);
-
 		indexTable = fopen(TRAIN_IND, "r+b");
 		database = fopen(TRAIN_DATA, "r+b");
-
 		fseek(indexTable, (record.id - 1) * INDEXER_SIZE, SEEK_SET);
 		fread(&indexer, INDEXER_SIZE, 1, indexTable);
 		fseek(database, indexer.address, SEEK_SET);
@@ -86,7 +84,6 @@ int insertTrain(struct Train record) {
 			record.id = 1;
 		}
 	}
-
 	record.firstCrewAddress = -1;
 	record.crewsCount = 0;
 	fwrite(&record, TRAIN_SIZE, 1, database);
@@ -107,7 +104,6 @@ int insertTrain(struct Train record) {
 int getTrain(struct Train* train, int id, char* error) {
 	FILE* indexTable = fopen(TRAIN_IND, "rb");
 	FILE* database = fopen(TRAIN_DATA, "rb");
-	
 	if (!checkFileExists(indexTable, database, error)) {
 		return 0;
 	}
@@ -115,55 +111,45 @@ int getTrain(struct Train* train, int id, char* error) {
 	if (!checkIndexExists(indexTable, error, id)) {
 		return 0;
 	}
-
 	fseek(indexTable, (id - 1) * INDEXER_SIZE, SEEK_SET);
 	fread(&indexer, INDEXER_SIZE, 1, indexTable);
-
 	if (!checkRecordExists(indexer, error)) {
 		return 0;
 	}
-
 	fseek(database, indexer.address, SEEK_SET);
 	fread(train, sizeof(struct Train), 1, database);
 	fclose(indexTable);
 	fclose(database);
-
 	return 1;
 }
 
 int updateTrain(struct Train train, char* error) {
 	FILE* indexTable = fopen(TRAIN_IND, "r+b");
 	FILE* database = fopen(TRAIN_DATA, "r+b");
-
+    struct Indexer indexer;
+    int id = train.id;
 	if (!checkFileExists(indexTable, database, error)) {
 		return 0;
 	}
-
-	struct Indexer indexer;
-	int id = train.id;
-
 	if (!checkIndexExists(indexTable, error, id)) {
 		return 0;
 	}
-
 	fseek(indexTable, (id - 1) * INDEXER_SIZE, SEEK_SET);
 	fread(&indexer, INDEXER_SIZE, 1, indexTable);
-
 	if (!checkRecordExists(indexer, error)) {
 		return 0;
 	}
-
 	fseek(database, indexer.address, SEEK_SET);
 	fwrite(&train, TRAIN_SIZE, 1, database);
 	fclose(indexTable);
 	fclose(database);
-
 	return 1;
 }
 
 int deleteTrain(int id, char* error) {
 	FILE* indexTable = fopen(TRAIN_IND, "r+b");
-
+    struct Train train;
+    struct Indexer indexer;
     if (indexTable == NULL) {
 		strcpy(error, "database files are not created yet");
 		return 0;
@@ -171,19 +157,11 @@ int deleteTrain(int id, char* error) {
 	if (!checkIndexExists(indexTable, error, id)) {
 		return 0;
 	}
-
-	struct Train train;
     getTrain(&train, id, error);
-
-	struct Indexer indexer;
-
 	fseek(indexTable, (id - 1) * INDEXER_SIZE, SEEK_SET);
 	fread(&indexer, INDEXER_SIZE, 1, indexTable);
-
 	indexer.exists = 0;
-
 	fseek(indexTable, (id - 1) * INDEXER_SIZE, SEEK_SET);
-
 	fwrite(&indexer, INDEXER_SIZE, 1, indexTable);
 	fclose(indexTable);
     noteDeletedTrain(id);
@@ -192,7 +170,6 @@ int deleteTrain(int id, char* error) {
 		FILE* crewDb = fopen(CREW_DATA, "r+b");
 		struct Crew crew;
 		fseek(crewDb, train.firstCrewAddress, SEEK_SET);
-
 		for (int i = 0; i < train.crewsCount; i++) {
 			fread(&crew, CREW_SIZE, 1, crewDb);
 			fclose(crewDb);

@@ -108,6 +108,6 @@ int main() {
 			default:
 				printf("Invalid input, TRY AGAIN!!!\n");
 		}
-		printf("==============\n");
+		printf("<<<==============>>>\n");
 	}
 }
