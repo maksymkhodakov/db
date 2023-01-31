@@ -56,29 +56,6 @@ void relinkAddresses(FILE* database, struct Crew previous, struct Crew crew, str
 	}
 }
 
-void noteDeletedCrew(long address) {
-	FILE* garbageZone = fopen(CREW_GARBAGE, "rb");
-	int garbageCount;
-	fscanf(garbageZone, "%d", &garbageCount);
-	long* deletedAddresses = malloc(garbageCount * sizeof(long));
-
-	for (int i = 0; i < garbageCount; i++) {
-		fscanf(garbageZone, "%ld", deletedAddresses + i);
-	}
-
-	fclose(garbageZone);
-	garbageZone = fopen(CREW_GARBAGE, "wb");
-	fprintf(garbageZone, "%d", garbageCount + 1);
-
-	for (int i = 0; i < garbageCount; i++) {
-		fprintf(garbageZone, " %ld", deletedAddresses[i]);
-	}
-
-	fprintf(garbageZone, " %ld", address);
-	free(deletedAddresses);
-	fclose(garbageZone);
-}
-
 void overwriteGarbageAddress(int garbageCount, FILE* garbageZone, struct Crew* record) {
 	long* deletedIds = malloc(garbageCount * sizeof(long));
 	for (int i = 0; i < garbageCount; i++) {
@@ -98,6 +75,51 @@ void overwriteGarbageAddress(int garbageCount, FILE* garbageZone, struct Crew* r
 
 	free(deletedIds);
 	fclose(garbageZone);
+}
+
+void noteDeletedCrew(long address) {
+    FILE* garbageZone = fopen(CREW_GARBAGE, "rb");
+    int garbageCount;
+    fscanf(garbageZone, "%d", &garbageCount);
+    long* deletedAddresses = malloc(garbageCount * sizeof(long));
+
+    for (int i = 0; i < garbageCount; i++) {
+        fscanf(garbageZone, "%ld", deletedAddresses + i);
+    }
+
+    fclose(garbageZone);
+    garbageZone = fopen(CREW_GARBAGE, "wb");
+    fprintf(garbageZone, "%d", garbageCount + 1);
+
+    for (int i = 0; i < garbageCount; i++) {
+        fprintf(garbageZone, " %ld", deletedAddresses[i]);
+    }
+
+    fprintf(garbageZone, " %ld", address);
+    free(deletedAddresses);
+    fclose(garbageZone);
+}
+
+int getCrew(struct Train train, struct Crew* crew, int crewId, char* error) {
+    if (!train.crewsCount) {
+        strcpy(error, "This train has no crew");
+        return 0;
+    }
+    FILE* database = fopen(CREW_DATA, "rb");
+    fseek(database, train.firstCrewAddress, SEEK_SET);
+    fread(crew, CREW_SIZE, 1, database);
+
+    for (int i = 0; i < train.crewsCount; i++) {
+        if (crew->crewId == crewId) {
+            fclose(database);
+            return 1;
+        }
+        fseek(database, crew->nextAddress, SEEK_SET);
+        fread(crew, CREW_SIZE, 1, database);
+    }
+    strcpy(error, "No such crew in database");
+    fclose(database);
+    return 0;
 }
 
 int insertCrew(struct Train train, struct Crew crew, char* error) {
@@ -129,28 +151,6 @@ int insertCrew(struct Train train, struct Crew crew, char* error) {
 	train.crewsCount++;
     updateTrain(train, error);
 	return 1;
-}
-
-int getCrew(struct Train train, struct Crew* crew, int crewId, char* error) {
-	if (!train.crewsCount) {
-		strcpy(error, "This train has no crew");
-		return 0;
-	}
-	FILE* database = fopen(CREW_DATA, "rb");
-	fseek(database, train.firstCrewAddress, SEEK_SET);
-	fread(crew, CREW_SIZE, 1, database);
-
-	for (int i = 0; i < train.crewsCount; i++) {
-		if (crew->crewId == crewId) {
-			fclose(database);
-			return 1;
-		}
-		fseek(database, crew->nextAddress, SEEK_SET);
-		fread(crew, CREW_SIZE, 1, database);
-	}
-	strcpy(error, "No such crew in database");
-	fclose(database);
-	return 0;
 }
 
 int updateCrew(struct Crew crew, int crewId) {

@@ -4,7 +4,7 @@
 #include "Entities.h"
 #include "Train.h"
 
-void readTrain(struct Train* train) {
+void inputTrain(struct Train* train) {
 	char name[16];
     int size;
     char color[16];
@@ -30,7 +30,7 @@ void readTrain(struct Train* train) {
     strcpy(train->type, type);
 }
 
-void readCrew(struct Crew* crew) {
+void inputCrew(struct Crew* crew) {
     char crewName[20];
     int crewAmount;
     int ratingScore;

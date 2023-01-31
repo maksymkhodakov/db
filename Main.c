@@ -12,14 +12,14 @@ int main() {
 		int choice;
 		int id;
 		char error[51];
-		printf("Options:\n0 EXIT\n1 Insert Train\n2 Get Train\n3 Update Train\n4 Delete Train\n5 Insert Crew\n6 Get Crew\n7 Update Crew\n8 Delete Crew\n9 General Info\n");
+		printf("Acceptable Options:\n0 EXIT\n1 Insert Train\n2 Get Train\n3 Update Train\n4 Delete Train\n5 Insert Crew\n6 Get Crew\n7 Update Crew\n8 Delete Crew\n9 General Info\n");
         printf("ENTER SOMETHING TO PROCEED\n");
 		scanf("%d", &choice);
 		switch (choice) {
 			case 0:
 				return 0;
 			case 1:
-                readTrain(&train);
+                inputTrain(&train);
                 insertTrain(train);
 				break;
 			case 2:
@@ -31,7 +31,7 @@ int main() {
 				printf("Enter ID: ");
 				scanf("%d", &id);
                 train.id = id;
-                readTrain(&train);
+                inputTrain(&train);
                 updateTrain(train, error) ? printf("Updated successfully\n") : printf("Error: %s\n", error);
 				break;
 			case 4:
@@ -48,7 +48,7 @@ int main() {
 					scanf("%d", &id);
 					if (checkKeyPairUnique(train, id)) {
                         crew.crewId = id;
-                        readCrew(&crew);
+                        inputCrew(&crew);
                         insertCrew(train, crew, error);
 						printf("Insertion complete!!!. To get crew use train\'s and crew\'s IDs\n");
 					} else {
@@ -76,7 +76,7 @@ int main() {
 					printf("Enter crew ID: ");
 					scanf("%d", &id);
 					if (getCrew(train, &crew, id, error)) {
-                        readCrew(&crew);
+                        inputCrew(&crew);
                         updateCrew(crew, id);
 						printf("Updated successfully\n");
 					} else {

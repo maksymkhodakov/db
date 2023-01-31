@@ -38,7 +38,6 @@ void noteDeletedTrain(int id) {
 
 void overwriteGarbageId(int garbageCount, FILE* garbageZone, struct Train* record) {
 	int* deleteIds = malloc(garbageCount * sizeof(int));
-
 	for (int i = 0; i < garbageCount; i++) {
 		fscanf(garbageZone, "%d", deleteIds + i);
 	}
